@@ -24,7 +24,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://task-flow-frontend.vercel.app', 'https://task-flow-six-beta.vercel.app'] 
+    ? ['https://task-flow-oucu.vercel.app', 'https://task-flow-six-beta.vercel.app'] 
     : ['http://localhost:3000'],
   credentials: true
 }));

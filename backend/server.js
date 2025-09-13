@@ -22,12 +22,13 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? true  // Allow all origins in production temporarily
-    : ['http://localhost:3000'],
-  credentials: true
-}));
+// CORS temporarily disabled for testing
+// app.use(cors({
+//   origin: process.env.NODE_ENV === 'production' 
+//     ? true  // Allow all origins in production temporarily
+//     : ['http://localhost:3000'],
+//   credentials: true
+// }));
 
 // Rate limiting
 const limiter = rateLimit({

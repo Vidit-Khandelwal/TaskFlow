@@ -23,7 +23,9 @@ app.set('trust proxy', 1);
 // Security middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? false : ['http://localhost:3000'],
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://task-flow-frontend.vercel.app', 'https://task-flow-six-beta.vercel.app'] 
+    : ['http://localhost:3000'],
   credentials: true
 }));
 

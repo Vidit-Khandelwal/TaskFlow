@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
   // Set up axios defaults
   useEffect(() => {
     axios.defaults.withCredentials = true;
+    axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'https://task-flow-six-beta.vercel.app';
   }, []);
 
   // Check if user is logged in on app start

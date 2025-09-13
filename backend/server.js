@@ -46,9 +46,9 @@ app.use(session({
   name: 'sid',
   secret: process.env.SESSION_SECRET || 'dev_session_secret_change_me',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,  // Changed to true
   cookie: {
-    httpOnly: true,
+    httpOnly: false,  // Changed to false for debugging
     sameSite: 'none',
     secure: true,
     maxAge: 90 * 24 * 60 * 60 * 1000

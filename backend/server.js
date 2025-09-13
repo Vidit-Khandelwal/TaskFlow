@@ -49,9 +49,9 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-  maxAge: 90 * 24 * 60 * 60 * 1000
+    sameSite: 'none',
+    secure: true,
+    maxAge: 90 * 24 * 60 * 60 * 1000
   },
   store: MongoStore.create({ mongoUrl, dbName: mongoDbName, collectionName: 'sessions' })
 }));

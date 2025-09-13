@@ -106,7 +106,7 @@ router.post('/verify-email', requireAuth, async (req, res) => {
     const expires = new Date(Date.now() + 60 * 60 * 1000);
     await UserModel.findByIdAndUpdate(user._id, { $set: { emailVerificationToken: token, emailVerificationExpires: expires } });
 
-    const baseUrl = process.env.BACKEND_BASE_URL || `http://localhost:${process.env.PORT || 5000}`;
+    const baseUrl = process.env.BACKEND_BASE_URL || 'https://task-flow-six-beta.vercel.app';
     const verifyUrl = `${baseUrl}/api/users/verify-email/confirm?token=${token}`;
 
     const sent = await sendVerificationEmail(user.email, user.name, verifyUrl);
@@ -133,11 +133,9 @@ router.get('/verify-email/confirm', async (req, res) => {
     user.emailVerificationExpires = undefined;
     await user.save();
 
-    const frontendBase = process.env.FRONTEND_BASE_URL;
-    if (frontendBase) {
-      const redirectTo = `${frontendBase.replace(/\/$/, '')}/settings?verified=1`;
-      return res.redirect(302, redirectTo);
-    }
+    const frontendBase = process.env.FRONTEND_BASE_URL || 'https://task-flow-oucu-git-main-vidit-khandelwals-projects-646b2f78.vercel.app';
+    const redirectTo = `${frontendBase.replace(/\/$/, '')}/settings?verified=1`;
+    return res.redirect(302, redirectTo);
 
     res.json({ message: 'Email verified successfully' });
   } catch (error) {

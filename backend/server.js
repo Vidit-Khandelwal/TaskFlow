@@ -22,9 +22,9 @@ app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
-// CORS temporarily disabled for testing
+// CORS temporarily disabled for testing - deployment trigger
 // app.use(cors({
-//   origin: process.env.NODE_ENV === 'production' 
+//   origin: process.env.NODE_ENV === 'production' git
 //     ? true  // Allow all origins in production temporarily
 //     : ['http://localhost:3000'],
 //   credentials: true

@@ -24,7 +24,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://task-flow-oucu-git-main-vidit-khandelwals-projects-646b2f78.vercel.app', 'https://task-flow-six-beta.vercel.app'] 
+    ? true  // Allow all origins in production temporarily
     : ['http://localhost:3000'],
   credentials: true
 }));

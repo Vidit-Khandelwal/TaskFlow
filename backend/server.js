@@ -117,6 +117,64 @@ app.get('/api/test-notifications', async (req, res) => {
   }
 });
 
+// Manual notification trigger (for testing)
+app.post('/api/trigger-notifications', async (req, res) => {
+  try {
+    const { TaskModel } = await import('./db/schema.js');
+    const { sendTaskReminderEmail } = await import('./services/emailService.js');
+    
+    const now = new Date();
+    const fiveMinutesFromNow = new Date(now.getTime() + 5 * 60 * 1000);
+    
+    // Find tasks ending in next 5 minutes
+    const tasksToRemind = await TaskModel.find({
+      endTime: {
+        $gte: now,
+        $lte: fiveMinutesFromNow
+      },
+      isCompleted: false,
+      isDeleted: false
+    }).populate('userId', 'email name emailVerified');
+    
+    let emailsSent = 0;
+    const results = [];
+    
+    for (const task of tasksToRemind) {
+      if (!task.userId.emailVerified) {
+        results.push({ task: task.title, status: 'skipped', reason: 'email not verified' });
+        continue;
+      }
+      
+      try {
+        const result = await sendTaskReminderEmail(
+          task.userId.email,
+          task.userId.name,
+          task.title,
+          task.endTime
+        );
+        
+        if (result.success) {
+          emailsSent++;
+          results.push({ task: task.title, status: 'sent', email: task.userId.email });
+        } else {
+          results.push({ task: task.title, status: 'failed', error: result.error });
+        }
+      } catch (error) {
+        results.push({ task: task.title, status: 'error', error: error.message });
+      }
+    }
+    
+    res.json({
+      currentTime: now.toISOString(),
+      tasksFound: tasksToRemind.length,
+      emailsSent,
+      results
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

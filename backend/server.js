@@ -81,6 +81,42 @@ app.get('/api/test-email', async (req, res) => {
   }
 });
 
+// Notification system test
+app.get('/api/test-notifications', async (req, res) => {
+  try {
+    const { TaskModel } = await import('./db/schema.js');
+    const { sendTaskReminderEmail } = await import('./services/emailService.js');
+    
+    // Check for tasks ending in next 10 minutes
+    const now = new Date();
+    const tenMinutesFromNow = new Date(now.getTime() + 10 * 60 * 1000);
+    
+    const tasksToRemind = await TaskModel.find({
+      endTime: {
+        $gte: now,
+        $lte: tenMinutesFromNow
+      },
+      isCompleted: false,
+      isDeleted: false
+    }).populate('userId', 'email name emailVerified');
+    
+    res.json({
+      currentTime: now.toISOString(),
+      tenMinutesFromNow: tenMinutesFromNow.toISOString(),
+      tasksFound: tasksToRemind.length,
+      tasks: tasksToRemind.map(task => ({
+        id: task._id,
+        title: task.title,
+        endTime: task.endTime,
+        userEmail: task.userId?.email,
+        userVerified: task.userId?.emailVerified
+      }))
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

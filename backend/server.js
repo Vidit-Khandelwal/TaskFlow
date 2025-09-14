@@ -66,6 +66,21 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', timestamp: new Date().toISOString() });
 });
 
+// Email configuration test
+app.get('/api/test-email', async (req, res) => {
+  try {
+    const { testEmailConfiguration } = await import('./services/emailService.js');
+    const isValid = await testEmailConfiguration();
+    res.json({ 
+      emailConfigured: isValid,
+      hasEmailUser: !!process.env.EMAIL_USER,
+      hasEmailPass: !!process.env.EMAIL_PASS
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
